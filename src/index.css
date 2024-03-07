@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.navbarr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0081C9;
+  height: 100px;
+  padding-left: 20px;
+}
+
+.navbarr .test {
+  padding: 10px;
+  font-size: 35px;
+}
+
+.navbarr .photo {
+  width: 100px;
+  border-radius: 50px;
+}
+
+.bode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  height: 575px;
+  background-image: url(./assets/highscool.jpg);
+  background-size: cover;
+}
+
+.bode .login {
+  width: 50rem;
+  height: 350px;
+  margin: 25px;
+  margin-right: 100px;
+  background-color: #5BC0F8;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 21px 24px 55px 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 21px 24px 55px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 21px 24px 55px 0px rgba(0,0,0,0.75);
+}
+
+.foodter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #606060;
+  height: 100px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.wel {
+  display: flex;
+  justify-content: center;
+  font-size: 35px;
+  font-weight: 900;
+  background: linear-gradient(to bottom, #9966ff 0%, #ff99cc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.Contactchannels {
+  display: flex;
+  gap: 10px;
+  font-size: 45px;
+}
+
+.Contact {
+  font-size: 20px;
+}
+
+.login1 {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  color: white;
+}
+
+.uname {
+  width: 350px;
+  height: 25px;
+  border-radius: 8px;
+  background-color: #FFC93C;
+  border: none;
+  transform: scale(1);
+}
+
+.uname:focus {
+  outline-color: rgb(255, 255, 255);
+  background-color: #ff99cc;
+  transform: scale(1.04);
+  transition: 0.25s;
+}
+
+.Pass {
+  width: 350px;
+  height: 25px;
+  border-radius: 8px;
+  background-color: #FFC93C;
+  border: none;
+  transform: scale(1);
+}
+
+.Pass:focus {
+  outline-color: rgb(255, 255, 255);
+  background-color: #ff99cc;
+  transform: scale(1.04);
+  transition: 0.25s;
+}
+
+.but {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.but button {
+  width: 150px;
+  height: 30px;
+  border-radius: 15px;
+  border: none;
+}
+
+.name {
+  display: flex;
+  justify-content: center;
+}
+
+.bodyTC {
+  display: flex;
+  flex-direction: row;
+}
+
+.nnav {
+  background-color: gray;
+  width: 30%;
+  height: 675px;
+}
+
+.nnav a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-decoration: none;
+  margin: 50px;
+  color: black;
+}
+
+.nnav a:hover {
+  color: #930000;
+}
+
+.nnnav {
+  background-color: #FF8DC7;
+  width: 70%;
+  height: 675px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
