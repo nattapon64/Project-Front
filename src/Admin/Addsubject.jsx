@@ -46,11 +46,12 @@ export default function Addsubject() {
                     </div>
                     <div className="drawer-side">
                         <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-                        <ul className="menu p-4 w-80 min-h-full bg-emerald-500 text-base-content text-black">
+                        <ul className="menu gap-5 p-4 w-80 min-h-full bg-emerald-500 text-base-content text-black">
                             {/* Sidebar content here */}
-                            <Link to='/add'><li><a>สมัคร</a></li></Link>
-                            <Link to='/Addsub'><li><a>เพิ่มรายวิชา</a></li></Link>
-                            <Link to='/Deluser'><li><a>แก้ไขผู้ใช้งาน</a></li></Link>
+                            <Link to='/News'><li>ข่าวสาร</li></Link>
+                                <Link to='/add'><li>สมัคร</li></Link>
+                                <Link to='/Addsub'><li>เพิ่มรายวิชา</li></Link>
+                                <Link to='/Deluser'><li>แก้ไขผู้ใช้งาน</li></Link>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +66,7 @@ export default function Addsubject() {
                 </div>
                 <div className='flex gap-7 p-6 bg-indigo-500'>
                     <button className="btn btn-outline btn-info" onClick={hdlSubmit}>ยืนยัน</button>
-                    <button className="btn btn-outline btn-info"onClick={hdlReload}>ยกเลิก</button>
+                    <button className="btn btn-outline btn-info" onClick={hdlReload}>ยกเลิก</button>
                 </div>
             </div>
         </div>

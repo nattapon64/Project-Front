@@ -54,6 +54,7 @@ const adminRouter = createBrowserRouter([
     </>,
     children: [
       { index: true, element: <Admin1 /> },
+      { path: '/News', element: <Admin1 /> },
       { path: '/add', element: <Adduser /> },
       { path: '/Addsub', element: <Addsubject/>},
       { path: '/Deluser', element: <Deluser/>},
