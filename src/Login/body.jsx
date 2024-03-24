@@ -19,10 +19,10 @@ export default function body() {
       e.preventDefault()
       // console.log(input)
       // validation
-      const rs = await axios.post('http://localhost:2000/user/login', input)
+      const rs = await axios.post('http://10.92.0.191:2000/user/login', input)
       // console.log(rs.data.token)
       localStorage.setItem('token', rs.data.token)
-      const rs1 = await axios.get('http://localhost:2000/user/me', {
+      const rs1 = await axios.get('http://10.92.0.191:2000/user/me', {
         headers: { Authorization: `Bearer ${rs.data.token}` }
       })
       console.log(rs1.data)

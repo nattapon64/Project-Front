@@ -12,6 +12,8 @@ import Student from '../student/student'
 import Adduser from '../Admin/Adduser'
 import Addsubject from '../Admin/Addsubject'
 import Deluser from '../Admin/Deluser'
+import User from '../Teacher/user'
+import Subject from '../Teacher/subject'
 
 
 const guestRouter = createBrowserRouter([
@@ -73,6 +75,8 @@ const teacherRouter = createBrowserRouter([
       { index: true, element: <Teacher1 /> },
       { path: '/complete', element: <Complete /> },
       { path: '/teacher2', element: <Teacher2 /> },
+      { path: '/user', element: <User /> },
+      { path: '/subject', element: <Subject /> },
       { path: '*', element: <p>PAGE NOT FOUND</p>},
     ]
   }

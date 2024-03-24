@@ -1,17 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
 import axios from 'axios';
-import Header from '../Header';
-
-const guestNav = [
-  { to: '/', text: 'Login' },
-  { to: '/register', text: 'Register' },
-];
-
-const userNav = [
-  // ถ้ามีการนำไปใช้เมื่อผู้ใช้ล็อกอิน จะเพิ่มเส้นทางที่นี่
-];
 
 export default function Teacher1() {
 
@@ -19,11 +8,11 @@ export default function Teacher1() {
   const [allSubject, setAllSubject] = useState([]);
   const [userClass, setUserClass] = useState([]);
   const [input, setInput] = useState({
-    Class: " "
-  });
-  const [input2, setInput2] = useState({
-    subID: " ",
-    grade: " "
+    datetime: '',
+    grade: '',
+    subjectSj_id: '',
+    userUser_id: ''
+
   });
 
   useEffect(() => {
@@ -58,80 +47,107 @@ export default function Teacher1() {
   const hdlChange = e => {
     setInput(prv => ({ ...prv, [e.target.name]: e.target.value }))
   }
-  const handleSubjectChange = (e, userId) => {
-    const { value: subID } = e.target;
-    setInput2(prev => ({
-      ...prev,
-      [userId]: {
-        ...prev[userId],
-        subID
+
+  const hdlSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('token')
+      console.log(input);
+      const rs = await axios.post('http://localhost:2000/teacher/term', { ...input, userUser_id: findUser.user_id }, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      if (rs.status === 200) {
+        alert("เพิ่มเกรดเรียบร้อย")
       }
-    }));
-  };
-  console.log(input2)
+      console.log(rs)
+    } catch (err) {
+      alert(err.massage)
+    }
+  }
+
+
+  const hdlChangeSubject = (e) => {
+    setInput(prv => ({ ...prv, subjectSj_id: e.target.value }))
+    console.log(input);
+  }
+
+  const findUser = userClass.find(el => el)
+  // console.log(findUser.user_id);
+
+
   const hdlSearch = async (e) => {
     e.preventDefault()
-    let token = localStorage.getItem('token')
-    const rs = await axios.get(`http://localhost:2000/teacher/user/${input.Class}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    console.log(rs.data)
-    setUserClass(rs.data.getUser)
-    setInput2(prevInput2 => ({
-      ...prevInput2,
-      userId: rs.data.getUser.map(user => user.user_id) // นำ user_id ทั้งหมดมาเก็บไว้ใน input2
-    }));
+    if (input.Class === "") {
+      alert("กรุณาเลือกชั้นเรียน")
+    }
+    else {
+      let token = localStorage.getItem('token')
+      const rs = await axios.get(`http://localhost:2000/teacher/user/${input.Class}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      setUserClass(rs.data.getUser)
+    }
   }
-  console.log(userClass)
 
-
-
-return (
-  <div>
-    <div className='bodyTC'>
-      <div className='nnav'>
-        <a href="#">รายชื่อวิชา</a>
-        <a href="#">รายชื่อนักเรียน</a>
-        <a href="#">ตารางเรียน</a>
-        <Link to="/complete">กรอกผลการเรียน</Link>
-      </div>
-      <div className='nnnav'>
-        <div>
-          <form className='flex flex-col text-blue gap-5 w-[30%] h-20 ml-5 mt-5'>
-            <select name="Class" value={input.Class} onChange={hdlChange} id="">
-              <option value="">กรุณาเลือกชั้นเรียน</option>
-              {allClass.map(el => (
-                <option key={el.cl_id} value={el.cl_id}>{el.classroom}</option>
-              ))}
-            </select>
+  return (
+    <div>
+      <div className='flex'>
+        <div className='bg bg-slate-600 flex flex-col w-[20%] gap-6'>
+          <Link to='/subject'>รายชื่อวิชา</Link>
+          <Link to='/user'>รายชื่อนักเรียน</Link>
+          <a href="#">ตารางเรียน</a>
+          <Link to="/complete">กรอกผลการเรียน</Link>
+        </div>
+        <div className='w-[80%] bg bg-pink-500 h-screen'>
+          <div>
+            <form className='flex flex-col text-blue gap-5 w-[30%] h-20 ml-5 mt-5'>
+              <select name="Class" value={input.Class} onChange={hdlChange} id="">
+                <option value="">กรุณาเลือกชั้นเรียน</option>
+                {allClass.map(el => (
+                  <option key={el.cl_id} value={el.cl_id}>{el.classroom}</option>
+                ))}
+              </select>
+              <div>
+                <button className='text-black' onClick={hdlSearch}>ค้นหา</button>
+              </div>
+            </form>
+          </div>
+          <form onSubmit={hdlSubmit}>
+            {userClass.length !== 0 ? userClass.map((el) => (
+              <div className='flex gap-5 my-3' key={el.user_id}>
+                <p className='w-40'>{el.user_id} {el.frist_name} {el.last_name}</p>
+                <select name="subjectSj_id" onChange={hdlChangeSubject}>
+                  <option value="">กรุณาเลือกวิชา</option>
+                  {allSubject.map(sub => (
+                    <option key={sub.sj_id} value={sub.sj_id}>{sub.subject}</option>
+                  ))}
+                </select>
+                <label>ปีการศึกษา</label>
+                <input className='w-[250px] h-[35px] rounded-xl text-center' type="text" name="datetime" value={input.datetime} onChange={hdlChange} />
+                <label>เกรด</label>
+                <input className='w-[50px] h-[35px] rounded-xl text-center' type="text" name='grade' value={input.grade} onChange={hdlChange} />
+              </div>
+            )) : ""}
             <div>
-              <button className='text-black' onClick={hdlSearch}>ค้นหา</button>
+              <button type='submit' className='text-black'>save</button>
             </div>
           </form>
         </div>
-        <form>
-          {userClass.length !== 0 ? userClass.map((el) => (
-            <div className='bg-black flex gap-5 my-3' key={el.user_id}>
-              <p className='w-40'>{el.frist_name}, {el.last_name}, {el.classCl_id}, {el.user_id}</p>
-              <select name="" id="" onChange={(e) => handleSubjectChange(e, el.user_id)}>
-                <option value="">กรุณาเลือกวิชา</option>
-                {allSubject.map(sub => (
-                  <option key={sub.sj_id} value={sub.sj_id}>{sub.subject}</option>
-                ))}
-              </select>
-              <input type="text" />
-              <button>บันทึก</button>
-            </div>
-          )) : ""}
-        </form>
-        <div className='text-2xl mt-2 flex justify-end gap-5 mr-5 mb-5'>
-          <button className="btn btn-outline btn-info"><Link to="/teacher2">ยืนยัน</Link></button>
-          <button className="btn btn-outline btn-info"><Link>แก้ไข</Link></button>
-        </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
+
+
+// const handleSubjectChange = (e, userId) => {
+//   const { value: subID } = e.target;
+//   setInput2(prev => ({
+//     ...prev,
+//     [userId]: {
+//       ...prev[userId],
+//       subID
+//     }
+//   }));
+// };

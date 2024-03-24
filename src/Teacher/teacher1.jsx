@@ -6,14 +6,14 @@ import Header from '../Header';
 export default function Teacher1() {
   return (
     <div>
-      <div className='bodyTC'>
-        <div className='nnav'>
-          <a href="">รายชื่อวิชา</a>
-          <a href="">รายชื่อนักเรียน</a>
+      <div className='flex'>
+        <div className='bg bg-slate-600 flex flex-col w-[20%] gap-6'>
+          <Link to='/subject'>รายชื่อวิชา</Link>
+          <Link to='/user'>รายชื่อนักเรียน</Link>
           <a href="">ตารางเรียน</a>
           <Link to="/complete">กรอกผลการเรียน</Link>
         </div>
-        <div className='nnnav'>
+        <div className='w-[80%] bg bg-pink-500 h-screen'>
 
         </div>
       </div>

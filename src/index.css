@@ -141,16 +141,6 @@ body {
   justify-content: center;
 }
 
-.bodyTC {
-  display: flex;
-  flex-direction: row;
-}
-
-.nnav {
-  background-color: gray;
-  width: 30%;
-  height: 675px;
-}
 
 .nnav a {
   display: flex;
