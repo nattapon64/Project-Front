@@ -1,19 +1,18 @@
-import React from 'react'
+import React from 'react';
 
-export default function footer() {
+export default function Footer() {
   return (
-    <form className='foodter bg-gradient-to-r from-emerald-500 from-10% via-sky-500 via-30% to-indigo-500 to-90%'>
-        <div className='text-xl text-black'>
-            ช่องทางการติดต่อ
-        </div>
-        <div className='text-xs'>
-          Nattapon Nupao SNRU
-        </div>
-        <div className='Contactchannels text-black '>
-            <i id='icon-fb' className="fa-brands fa-facebook"></i>
-            <i id='icon-li' className="fa-brands fa-line"></i>
-            <i id='icon-ig' className="fa-brands fa-instagram"></i>
-        </div>
-    </form>
-  )
+    <footer className="flex justify-between px-10 footer bg-gradient-to-r from-emerald-500 via-sky-500 to-indigo-500 py-8 text-center text-white">
+      <div className="text-2xl font-bold mb-4">ช่องทางการติดต่อ</div>
+      <div className="text-sm mb-2">Nattapon Nupao SNRU</div>
+      <div className="flex justify-center gap-4">
+        <a href="https://www.facebook.com" target='_blank' className="text-white hover:text-gray-300 transition-all duration-300">
+          <i className="fab fa-facebook-square text-3xl"></i>
+        </a>
+        <a href="#" className="text-white hover:text-gray-300 transition-all duration-300">
+          <i className="fab fa-instagram-square text-3xl"></i>
+        </a>
+      </div>
+    </footer>
+  );
 }

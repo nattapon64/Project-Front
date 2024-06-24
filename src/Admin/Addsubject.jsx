@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
+import Slibaradmin from './slibaradmin'
 
 export default function Addsubject() {
     const [input, setInput] = useState({
@@ -30,46 +31,41 @@ export default function Addsubject() {
         }
     }
     const hdlReload = () => {
-        window.location.reload
+        window.location.reload()
     }
 
-
     return (
-        <div>
-            <div className='flex'>
-                <div className="drawer lg:drawer-open">
-                    <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-                    <div className="drawer-content flex flex-col items-center justify-center">
-                        {/* Page content here */}
-                        <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label>
+        <div className='min-h-screen bg-gray-100'>
+            <div className='drawer lg:drawer-open'>
+                <input id='my-drawer-2' type='checkbox' className='drawer-toggle' />
+                <div className='drawer-content flex flex-col items-center'>
+                    {/* Page content here */}
+                    <label htmlFor='my-drawer-2' className='btn btn-primary drawer-button lg:hidden'>Open drawer</label>
 
+                    <div className='w-full max-w-lg p-8 mt-10 bg-white rounded-lg shadow-md'>
+                        <h2 className='text-2xl font-bold text-center mb-6'>เพิ่มรายวิชา</h2>
+                        <form onSubmit={hdlSubmit}>
+                            <div className='mb-4'>
+                                <label className='block text-gray-700'>รหัสวิชา</label>
+                                <input className='w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-200' type='text' name='sub_code' value={input.sub_code} onChange={hdlChange} />
+                            </div>
+                            <div className='mb-4'>
+                                <label className='block text-gray-700'>วิชา</label>
+                                <input className='w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-200' type='text' name='subject' value={input.subject} onChange={hdlChange} />
+                            </div>
+                            <div className='mb-4'>
+                                <label className='block text-gray-700'>หน่วยกิต</label>
+                                <input className='w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-200' type='text' name='credit' value={input.credit} onChange={hdlChange} />
+                            </div>
+                            <div className='flex justify-between'>
+                                <button className='px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700' type='submit'>ยืนยัน</button>
+                                <button className='px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700' type='button' onClick={hdlReload}>ยกเลิก</button>
+                            </div>
+                        </form>
                     </div>
-                    <div className="drawer-side">
-                        <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-                        <ul className="menu gap-5 p-4 w-80 min-h-full bg-emerald-500 text-base-content text-black">
-                            {/* Sidebar content here */}
-                            <Link to='/News'><li>ข่าวสาร</li></Link>
-                                <Link to='/add'><li>สมัคร</li></Link>
-                                <Link to='/Addsub'><li>เพิ่มรายวิชา</li></Link>
-                                <Link to='/Deluser'><li>แก้ไขผู้ใช้งาน</li></Link>
-                        </ul>
-                    </div>
                 </div>
-                <div className="flex flex-col p-[15px] gap-2 min-h-screen w-[10000px]">
-                    {/* style={{ backgroundImage: 'url(https://wallpapers.com/images/hd/blue-aesthetic-moon-df8850p673zj275y.jpg)' }} นำเข้ารูปภาพมาใช้เป็น background*/}
-                    <label>รหัสวิชา</label>
-                    <input className='w-[250px] h-[35px] rounded-xl' type="text" name="sub_code" value={input.sub_code} onChange={hdlChange} />
-                    <label>วิชา</label>
-                    <input className='w-[250px] h-[35px] rounded-xl' type="text" name="subject" value={input.subject} onChange={hdlChange} />
-                    <label>หน่วยกิต</label>
-                    <input className='w-[250px] h-[35px] rounded-xl' type="text" name="credit" value={input.credit} onChange={hdlChange} />
-                </div>
-                <div className='flex gap-7 p-6 bg-indigo-500'>
-                    <button className="btn btn-outline btn-info" onClick={hdlSubmit}>ยืนยัน</button>
-                    <button className="btn btn-outline btn-info" onClick={hdlReload}>ยกเลิก</button>
-                </div>
+                <Slibaradmin />
             </div>
         </div>
     )
 }
-

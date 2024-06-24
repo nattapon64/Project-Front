@@ -7,13 +7,14 @@ export default function Teacher1() {
   return (
     <div>
       <div className='flex'>
-        <div className='bg bg-slate-600 flex flex-col w-[20%] gap-6'>
-          <Link to='/subject'>รายชื่อวิชา</Link>
-          <Link to='/user'>รายชื่อนักเรียน</Link>
-          <a href="">ตารางเรียน</a>
-          <Link to="/complete">กรอกผลการเรียน</Link>
+        <div className="bg-slate-600 flex flex-col w-1/5 gap-6 p-4">
+          <Link to='/subject' className="text-white hover:bg-slate-500 p-2 rounded">รายชื่อวิชา</Link>
+          <Link to='/user' className="text-white hover:bg-slate-500 p-2 rounded">รายชื่อนักเรียน</Link>
+          <a href="#" className="text-white hover:bg-slate-500 p-2 rounded">ตารางเรียน</a>
+          <Link to="/complete" className="text-white hover:bg-slate-500 p-2 rounded">กรอกผลการเรียน</Link>
+          <Link to="/searchedit" className="text-white hover:bg-slate-500 p-2 rounded">ค้นหา</Link>
         </div>
-        <div className='w-[80%] bg bg-pink-500 h-screen'>
+        <div className='w-[80%] h-screen'>
 
         </div>
       </div>

@@ -14,7 +14,10 @@ import Addsubject from '../Admin/Addsubject'
 import Deluser from '../Admin/Deluser'
 import User from '../Teacher/user'
 import Subject from '../Teacher/subject'
-
+import Slibaradmin from '../Admin/slibaradmin'
+import Searchedit from '../Teacher/searchedit'
+import SlibraSTD from '../student/slibraSTD'
+import ProfileSTD from '../student/profileSTD'
 
 const guestRouter = createBrowserRouter([
   {
@@ -42,6 +45,9 @@ const userRouter = createBrowserRouter([
     </>,
     children: [
       { index: true, element: <Student /> },
+      { path: '/Student', element: <Student/>},
+      { path: '/SlibraSTD', element: <SlibraSTD/>},
+      { path: '/ProfileSTD', element: <ProfileSTD/>},
       { path: '*', element: <p>PAGE NOT FOUND</p>},
     ]
   }
@@ -57,6 +63,7 @@ const adminRouter = createBrowserRouter([
     children: [
       { index: true, element: <Admin1 /> },
       { path: '/News', element: <Admin1 /> },
+      { path: '/slibaradmin', element: <Slibaradmin /> },
       { path: '/add', element: <Adduser /> },
       { path: '/Addsub', element: <Addsubject/>},
       { path: '/Deluser', element: <Deluser/>},
@@ -76,6 +83,7 @@ const teacherRouter = createBrowserRouter([
       { path: '/complete', element: <Complete /> },
       { path: '/teacher2', element: <Teacher2 /> },
       { path: '/user', element: <User /> },
+      { path: '/searchedit', element: <Searchedit /> },
       { path: '/subject', element: <Subject /> },
       { path: '*', element: <p>PAGE NOT FOUND</p>},
     ]

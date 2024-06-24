@@ -1,64 +1,79 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-export default function user() {
-    const [data, setData] = useState([])
+export default function User() {
+    const [data, setData] = useState([]);
+    const [slClass, setSlClass] = useState([]);
+    const [studentCount, setStudentCount] = useState(0);
 
     useEffect(() => {
+        fetchClasses();
         let token = localStorage.getItem("token");
 
         axios.get(`http://localhost:2000/teacher/user`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        }).then(res => setData(res.data.getUser))
-            .catch(err => console.log(err))
-    }, [])
+        })
+            .then(res => {
+                const students = res.data.getUser.filter(user => user.role === "STUDENT");
+                setData(students);
+                setStudentCount(students.length);
+            })
+            .catch(err => console.log(err));
+    }, []);
+
     console.log(data)
 
+    const fetchClasses = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const rs = await axios.get('http://localhost:2000/admin/selectClass', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setSlClass(rs.data.slClass);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     return (
-        <div>
-            <div className='flex'>
-                <div className='bg bg-slate-600 flex flex-col w-[20%] gap-6'>
-                    <Link to='/subject'>รายชื่อวิชา</Link>
-                    <Link to='/user'>รายชื่อนักเรียน</Link>
-                    <a href="">ตารางเรียน</a>
-                    <Link to="/complete">กรอกผลการเรียน</Link>
-                </div>
-                <div className='w-[80%] bg bg-pink-500 h-screen'>
-                    <div className='mt-3 w-[100%]'>
-                        <h3 className='flex justify-center'>รายชื่อ</h3>
-                        <table className='table'>
+        <div className="flex min-h-screen bg-gray-100">
+            <div className="bg-slate-600 flex flex-col w-1/5 gap-6 p-4">
+                <Link to='/subject' className="text-white hover:bg-slate-500 p-2 rounded">รายชื่อวิชา</Link>
+                <Link to='/user' className="text-white hover:bg-slate-500 p-2 rounded">รายชื่อนักเรียน</Link>
+                <a href="#" className="text-white hover:bg-slate-500 p-2 rounded">ตารางเรียน</a>
+                <Link to="/complete" className="text-white hover:bg-slate-500 p-2 rounded">กรอกผลการเรียน</Link>
+                <Link to="/searchedit" className="text-white hover:bg-slate-500 p-2 rounded">ค้นหา</Link>
+            </div>
+            <div className="w-4/5 p-6">
+                <div className="bg-white shadow-lg rounded-lg p-6">
+                    <h3 className="text-center text-2xl font-bold mb-6">รายชื่อ</h3>
+                    <div className="text-center mb-6">
+                        <h4 className="text-lg font-semibold">จำนวนนักเรียนทั้งหมด: <span className="text-blue-600">{studentCount}</span></h4>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="table-auto w-full border-collapse">
                             <thead>
-                                <tr>
-                                    <th>Frist_name</th>
-                                    <th>Last_name</th>
-                                    <th>Class</th>
-                                    <th>IMG</th>
-                                    <th>Status</th>
+                                <tr className="bg-gray-200">
+                                    <th className="px-4 py-2 border">First Name</th>
+                                    <th className="px-4 py-2 border">Last Name</th>
+                                    <th className="px-4 py-2 border">Class</th>
+                                    <th className="px-4 py-2 border">Image</th>
+                                    <th className="px-4 py-2 border">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {data.filter(teacher => teacher.role === "STUDENT").map((user, index) => (
-                                    <tr key={index + 1}>
-                                        <td>{user.frist_name}</td>
-                                        <td>{user.last_name}</td>
-                                        <td>{user.class.classroom}</td>
-                                        <td><img className='max-h-[100px]' src={user.IMG} alt="picture" /></td>
-                                        <td>{user.role}</td>
-                                        <td>
-                                            <dialog id="my_modal_4" className="modal">
-                                                <div className="modal-box w-11/12 max-w-5xl">
-                                                    <h3 className="font-bold text-lg">Hello!</h3>
-                                                    <p className="py-4"></p>
-                                                    <div className="modal-action">
-                                                        <form method="dialog">
-                                                            <button className="btn">Close</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </dialog></td>
+                                {data.map((user, index) => (
+                                    <tr key={index} className="hover:bg-gray-100">
+                                        <td className="px-4 py-2 border">{user.frist_name}</td>
+                                        <td className="px-4 py-2 border">{user.last_name}</td>
+                                        <td className="px-4 py-2 border">{user.class.classroom}</td>
+                                        <td className="px-4 py-2 border"><img className="h-20 w-20 object-cover rounded" src={user.IMG} alt="User" /></td>
+                                        <td className="px-4 py-2 border">{user.role}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -67,5 +82,5 @@ export default function user() {
                 </div>
             </div>
         </div>
-    )
+    );
 }

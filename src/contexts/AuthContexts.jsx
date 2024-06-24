@@ -8,13 +8,15 @@ function AuthContextProvider(props) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const ipAddress = window.location.hostname;
+
   useEffect( ()=>{
     const run = async () => {
       try {
         setLoading(true)
         let token = localStorage.getItem('token')
         if(!token) { return }
-        const rs = await axios.get('http://10.92.0.191:2000/user/me', {
+        const rs = await axios.get(`http://${ipAddress}:2000/user/me`, {
           headers : { Authorization : `Bearer ${token}` }
         })
         setUser(rs.data)
