@@ -1,43 +1,71 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-// import { Link } from 'react-router-dom'
-import Slibaradmin from './slibaradmin'
-import { toast } from 'react-toastify'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import Slibaradmin from './slibaradmin';
+import { toast, ToastContainer } from 'react-toastify';
+import Swal from 'sweetalert2';
+
 
 
 function Deluser() {
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]);
 
     useEffect(() => {
         let token = localStorage.getItem("token");
+
+        if (!token) {
+            toast.error("การเชื่อมต่อหมดอายุ กรุณาเข้าสู่ระบบใหม่");
+            return;
+        }
 
         axios.get(`http://localhost:2000/admin/user`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }).then(res => setData(res.data.user))
-            .catch(err => console.log(err))
-    }, [])
+            .catch(err => console.log(err));
+    }, []);
 
     const hdlDelete = async (e, user_id) => {
-        try {
-            e.preventDefault()
-            const token = localStorage.getItem('token')
-            const rs = await axios.delete(`http://localhost:2000/admin/user/${user_id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            if (rs.status === 200) {
-                toast.success("ลบข้อมูลสำเร็จ", {
-                  onClose: () => location.reload(),
-                  autoClose: 2000,
-                })
-              }
-            // setTrigger(prv => !prv)
-        } catch (err) {
-            toast.error("ไม่สามารถลบข้อมูลได้")
-            console.log(err)
-        }
-    }
+        e.preventDefault();
+        Swal.fire({
+            title: 'คุณแน่ใจหรือไม่?',
+            text: "คุณจะไม่สามารถกู้คืนข้อมูลนี้ได้!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'ใช่, ลบเลย!',
+            cancelButtonText: 'ยกเลิก'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        toast.error("การเชื่อมต่อหมดอายุ กรุณาเข้าสู่ระบบใหม่");
+                        return;
+                    }
+                    const rs = await axios.delete(`http://localhost:2000/admin/user/${user_id}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    if (rs.status === 200) {
+                        // toast.success("ลบข้อมูลสำเร็จ", {
+                        //     autoClose: 2000,
+                        // });
+                        // อัพเดทข้อมูลหลังจากลบ
+                        setData(prevData => prevData.filter(user => user.user_id !== user_id));
+                        Swal.fire(
+                            'ลบแล้ว!',
+                            'ข้อมูลของคุณถูกลบเรียบร้อยแล้ว.',
+                            'success'
+                        );
+                    }
+                } catch (err) {
+                    toast.error("ไม่สามารถลบข้อมูลได้");
+                    console.log(err);
+                }
+            }
+        });
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 flex">
@@ -88,44 +116,46 @@ function Deluser() {
 }
 
 const Modal = ({ user }) => {
-    const modalId = `my_modal_${user.user_id}`
-    // console.log(modalId)
+    const modalId = `my_modal_${user.user_id}`;
     const [editData, setEditData] = useState({
         username: user.username,
-        frist_name: user.frist_name,
+        first_name: user.first_name,
         last_name: user.last_name,
-        email: user.eamil
+        email: user.email
     });
 
     const [isEditing, setEditing] = useState(false);
 
-    const handleEditCilck = () => {
+    const handleEditClick = () => {
         setEditData({ ...user });
         setEditing(true);
-    }
+    };
 
     const handleSaveClick = async (e) => {
-        setEditData(false);
         try {
-            e.preventDefault()
+            e.preventDefault();
             const user_id = user.user_id;
-            const apiUrl = `http://localhost:2000/admin/update/${user_id}`
-            const rs = await axios.patch(apiUrl, editData);
-
-
-            console.log(rs)
+            const token = localStorage.getItem('token');
+            if (!token) {
+                toast.error("การเชื่อมต่อหมดอายุ กรุณาเข้าสู่ระบบใหม่");
+                return;
+            }
+            const apiUrl = `http://localhost:2000/admin/update/${user_id}`;
+            const rs = await axios.patch(apiUrl, editData, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
 
             if (rs.status === 200) {
                 toast.success("แก้ไขข้อมูลสำเร็จ", {
-                  onClose: () => location.reload(),
-                  autoClose: 2000,
-                })
+                    onClose: () => window.location.reload(),
+                    autoClose: 2000,
+                });
                 setEditing(false);
                 document.getElementById(modalId).close();
-              }
+            }
         } catch (err) {
-            // console.log(err)
-            console.log("เกิดข้อผิดพลาดในการแก้ไข", err);
+            toast.error("เกิดข้อผิดพลาดในการแก้ไข");
+            console.log(err);
         }
     };
 
@@ -133,61 +163,59 @@ const Modal = ({ user }) => {
         setEditData((prevData) => ({
             ...prevData,
             [e.target.name]: e.target.value
-        }))
-    }
+        }));
+    };
 
-    const hdlBack = (id) => {
-        if (isEditing) {
-            setEditing(!isEditing)
-        }
-        document.getElementById(id).close()
-    }
+    const handleBack = () => {
+        setEditing(false);
+        document.getElementById(modalId).close();
+    };
 
     return (
         <dialog id={modalId} className='modal'>
-            {/* {console.log(modalId)} */}
             <div className='modal-box'>
                 <h3 className='font-bold text-lg mb-5'>
                     แก้ไขผู้ใช้งาน
                 </h3>
                 <h3 className='text-lg mb-5'>
-                    username :
+                    Username:
                     {isEditing ?
                         <input className='px-2 py-1 rounded-md w-4/5' type='text' name='username' value={editData.username} onChange={handleChange} />
                         : user.username
                     }
                 </h3>
                 <h3 className='text-lg mb-5'>
-                    frist_name :
+                    First Name:
                     {isEditing ?
-                        <input className='px-2 py-1 rounded-md w-4/5' type='text' name='frist_name' value={editData.frist_name} onChange={handleChange} />
-                        : user.frist_name
+                        <input className='px-2 py-1 rounded-md w-4/5' type='text' name='first_name' value={editData.first_name} onChange={handleChange} />
+                        : user.first_name
                     }
                 </h3>
                 <h3 className='text-lg mb-5'>
-                    last_name :
+                    Last Name:
                     {isEditing ?
                         <input className='px-2 py-1 rounded-md w-4/5' type='text' name='last_name' value={editData.last_name} onChange={handleChange} />
                         : user.last_name
                     }
                 </h3>
                 <h3 className='text-lg mb-5'>
-                    email :
+                    Email:
                     {isEditing ?
                         <input className='px-2 py-1 rounded-md w-4/5' type='text' name='email' value={editData.email} onChange={handleChange} />
                         : user.email
                     }
                 </h3>
                 <div className='flex justify-end gap-2'>
-                    <button type="button" className='btn btn-outline btn-error' onClick={() => hdlBack(modalId)}>ย้อนกลับ</button>
+                    <button type="button" className='btn btn-outline btn-error' onClick={handleBack}>ย้อนกลับ</button>
                     {isEditing ? (
                         <button className="btn btn-outline btn-info" onClick={handleSaveClick}>บันทึก</button>
                     ) : (
-                        <button className="btn btn-outline btn-info" onClick={handleEditCilck}>แก้ไข</button>
+                        <button className="btn btn-outline btn-info" onClick={handleEditClick}>แก้ไข</button>
                     )}
                 </div>
             </div>
         </dialog>
-    )
-}
-export default Deluser
+    );
+};
+
+export default Deluser;

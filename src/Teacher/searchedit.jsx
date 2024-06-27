@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import SlibaraTC from './slibaraTC';
 import { toast } from 'react-toastify';
 
 function SearchEdit() {
+    const [search, setSearch] = useState({
+        username: "",
+        datetime: ""
+    })
     const [data, setData] = useState([])
     const [allClass, setAllClass] = useState([]);
     const [allSubject, setAllSubject] = useState([]);
@@ -60,6 +65,10 @@ function SearchEdit() {
         setInput(prv => ({ ...prv, [e.target.name]: e.target.value }));
     };
 
+    const hdlChangeSearch = (e) => {
+        setSearch(prv => ({ ...prv, [e.target.name]: e.target.value }));
+    };
+
     const hdlChangeyear = (e) => {
         const Newvalue = e.target.name === "datetime" ? (e.target.value === "2567" ? "2567" : "2568") : e.target.value;
         setYear(Newvalue);
@@ -92,24 +101,24 @@ function SearchEdit() {
 
     const hdlSearch = async (e) => {
         e.preventDefault();
-        if (input.username === "") {
+        if (search.username === "") {
             alert("กรุณากรอกรหัสผู้ใช้งาน");
         } else {
             let token = localStorage.getItem('token');
             try {
-                const rs = await axios.get(`http://localhost:2000/teacher/searchUser?search=${input.username}`, {
+                const rs = await axios.get(`http://localhost:2000/teacher/getTermUser?search=${search.username}&year=${search.datetime}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                console.log(rs.data.getsearchUser);
-                const users = rs.data.getsearchUser || [];
+                console.log(rs.data.getTerm);
+                const users = rs.data.getTerm || [];
                 setUserClass(users);
-                console.log(userClass)
-                setInput(prevInput => ({
-                    ...prevInput,
-                    userUser_id: users.length > 0 ? users[0].user_id : ''
-                }));
+                // console.log(userClass)
+                // setInput(prevInput => ({
+                //     ...prevInput,
+                //     userUser_id: users.length > 0 ? users[0].user_id : ''
+                // }));
             } catch (error) {
                 console.log('ไม่พบผู้ใช้งาน:', error);
                 // alert('ไม่พบผู้ใช้งาน');
@@ -152,23 +161,25 @@ function SearchEdit() {
 
     return (
         <div className="min-h-screen flex bg-gray-100">
-            <div className="bg-slate-600 flex flex-col w-1/5 gap-6 p-4">
-                <Link to='/subject' className="text-white hover:bg-slate-500 p-2 rounded">รายชื่อวิชา</Link>
-                <Link to='/user' className="text-white hover:bg-slate-500 p-2 rounded">รายชื่อนักเรียน</Link>
-                <a href="#" className="text-white hover:bg-slate-500 p-2 rounded">ตารางเรียน</a>
-                <Link to="/complete" className="text-white hover:bg-slate-500 p-2 rounded">กรอกผลการเรียน</Link>
-                <Link to="/searchedit" className="text-white hover:bg-slate-500 p-2 rounded">ค้นหา</Link>
-            </div>
+            <SlibaraTC />
             <div className="w-4/5 p-6">
                 <div className="mb-6">
                     <form className="flex flex-col gap-3" onSubmit={hdlSearch}>
                         <input
                             type="text"
                             name="username"
-                            value={input.username}
-                            onChange={hdlChange}
+                            value={search.username}
+                            onChange={hdlChangeSearch}
                             className="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder="Enter username"
+                        />
+                        <input
+                            type="text"
+                            name="datetime"
+                            value={search.datetime}
+                            onChange={hdlChangeSearch}
+                            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Enter Year"
                         />
                         <button
                             type="submit"
@@ -193,13 +204,13 @@ function SearchEdit() {
                             <tbody>
                                 {console.log(userClass)}
                                 {userClass.map((el, index) => (
-                                    <tr key={el.username}>
-                                        <td className="border px-4 py-2">{el.username}</td>
-                                        <td className="border px-4 py-2">{el.frist_name}</td>
-                                        <td className="border px-4 py-2">{el.last_name}</td>
-                                        <td className="border px-4 py-2">{el.email}</td>
+                                    <tr key={index}>
+                                        <td className="border px-4 py-2">{el.user.username}</td>
+                                        <td className="border px-4 py-2">{el.user.frist_name}</td>
+                                        <td className="border px-4 py-2">{el.user.last_name}</td>
+                                        <td className="border px-4 py-2">{el.user.email}</td>
                                         <td className="border px-4 py-2">
-                                            <button className="btn btn-primary" onClick={() => openModal(el.user_id)}>แก้ไข</button>
+                                            <button className="btn btn-primary" onClick={() => openModal(el.tr_id)}>แก้ไข</button>
                                         </td>
                                     </tr>
                                 ))}
@@ -219,12 +230,12 @@ function SearchEdit() {
 
 const Modal = ({ term, gradeByUID }) => {
 
-    const modalId = `my_modal_${term.user_id}`;
+    const modalId = `my_modal_${term.tr_id}`;
 
     const [editData, setEditData] = useState({
         datetime: gradeByUID?.datetime,
         grade: gradeByUID?.grade,
-        subjectSj_id: gradeByUID?.subjectSj_id,
+        subjectSj_id: gradeByUID?.subject?.subject,
         userUser_id: gradeByUID?.userUser_id,
     });
 
@@ -305,8 +316,8 @@ const Modal = ({ term, gradeByUID }) => {
                     )}
                 </h3>
 
-                <h3 className='text-lg mb-5'>
-                    subjectSj_id:
+                <h3 className='text-lg flex gap-2 mb-5 w-full'>
+                    วิชา :
                     {isEditing ? (
                         <input
                             className='px-2 py-1 rounded-md w-4/5'
@@ -316,7 +327,7 @@ const Modal = ({ term, gradeByUID }) => {
                             onChange={handleChange}
                         />
                     ) : (
-                        gradeByUID?.subjectSj_id
+                        <p> {gradeByUID?.subject?.subject}</p>
                     )}
                 </h3>
 

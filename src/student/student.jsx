@@ -21,14 +21,11 @@ export default function Student() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex bg-gray-100">
       <SlibraSTD />
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col items-center justify-center">
-          <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden m-4">
-            Open drawer
-          </label>
           <div className="carousel w-full max-w-4xl mx-auto shadow-lg rounded-lg overflow-hidden">
             <div id="slide1" className={`carousel-item relative w-full ${currentSlide === 1 ? 'block' : 'hidden'}`}>
               <img src="https://picsum.photos/id/175/800/400" className="w-full object-cover" alt="Slide 1" />

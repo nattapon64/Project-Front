@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import SlibaraTC from './slibaraTC';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Teacher1() {
   const [allClass, setAllClass] = useState([]);
@@ -21,12 +24,16 @@ export default function Teacher1() {
     document.title = 'Complete';
     const getClass = async () => {
       let token = localStorage.getItem('token');
-      const rs = await axios.get('http://localhost:2000/teacher/class', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      setAllClass(rs.data.getClass);
+      try {
+        const rs = await axios.get('http://localhost:2000/teacher/class', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setAllClass(rs.data.getClass);
+      } catch (error) {
+        toast.error("เกิดข้อผิดพลาดในการโหลดข้อมูลชั้นเรียน");
+      }
     };
     getClass();
   }, []);
@@ -34,18 +41,21 @@ export default function Teacher1() {
   useEffect(() => {
     const getSubject = async () => {
       let token = localStorage.getItem('token');
-      const rs = await axios.get('http://localhost:2000/teacher/subject', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      setAllSubject(rs.data.getSubject);
+      try {
+        const rs = await axios.get('http://localhost:2000/teacher/subject', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setAllSubject(rs.data.getSubject);
+      } catch (error) {
+        toast.error("เกิดข้อผิดพลาดในการโหลดข้อมูลวิชา");
+      }
     };
     getSubject();
   }, []);
 
   const dateNow = new Date().toISOString();
-
   const yearNow = parseInt(dateNow.split('-')[0]) + 543
 
   useEffect(() => {
@@ -68,7 +78,7 @@ export default function Teacher1() {
     console.log(userID)
     try {
       if (userClass.length === 0) {
-        alert("ไม่พบข้อมูลผู้ใช้");
+        toast.error("ไม่พบข้อมูลผู้ใช้");
         return;
       }
       const token = localStorage.getItem('token');
@@ -77,11 +87,13 @@ export default function Teacher1() {
       });
 
       if (rs.status === 200) {
-        alert("เพิ่มเกรดเรียบร้อย");
+        toast.success("เพิ่มเกรดเรียบร้อย", {
+          autoClose: 2000,
+        });
         closeModal();
       }
     } catch (err) {
-      alert(err.message);
+      toast.error("เกิดข้อผิดพลาดในการเพิ่มเกรด");
     }
   };
 
@@ -92,19 +104,23 @@ export default function Teacher1() {
   const hdlSearch = async (e) => {
     e.preventDefault();
     if (input.Class === "") {
-      alert("กรุณาเลือกชั้นเรียน");
+      toast.error("กรุณาเลือกชั้นเรียน");
     } else {
       let token = localStorage.getItem('token');
-      const rs = await axios.get(`http://localhost:2000/teacher/user/${input.Class}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      setUserClass(rs.data.getUser);
-      setInput(prevInput => ({
-        ...prevInput,
-        userUser_id: rs.data.getUser.length > 0 ? rs.data.getUser[0].user_id : ''
-      }));
+      try {
+        const rs = await axios.get(`http://localhost:2000/teacher/user/${input.Class}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setUserClass(rs.data.getUser);
+        setInput(prevInput => ({
+          ...prevInput,
+          userUser_id: rs.data.getUser.length > 0 ? rs.data.getUser[0].user_id : ''
+        }));
+      } catch (error) {
+        toast.error("เกิดข้อผิดพลาดในการค้นหาผู้ใช้");
+      }
     }
   };
 
@@ -129,18 +145,13 @@ export default function Teacher1() {
     setInput(prevInput => ({
       ...prevInput,
       grade: ""
-  }));
+    }));
   };
 
   return (
     <div className="min-h-screen flex bg-gray-100">
-      <div className="bg-slate-600 flex flex-col w-1/5 gap-6 p-4">
-        <Link to='/subject' className="text-white hover:bg-slate-500 p-2 rounded">รายชื่อวิชา</Link>
-        <Link to='/user' className="text-white hover:bg-slate-500 p-2 rounded">รายชื่อนักเรียน</Link>
-        <a href="#" className="text-white hover:bg-slate-500 p-2 rounded">ตารางเรียน</a>
-        <Link to="/complete" className="text-white hover:bg-slate-500 p-2 rounded">กรอกผลการเรียน</Link>
-        <Link to="/searchedit" className="text-white hover:bg-slate-500 p-2 rounded">ค้นหา</Link>
-      </div>
+      <SlibaraTC />
+      <ToastContainer />
       <div className="w-4/5 p-6">
         <div className="mb-6">
           <form className="flex flex-col gap-3" onSubmit={hdlSearch}>
@@ -202,20 +213,37 @@ export default function Teacher1() {
               <div className='flex justify-end mb-4'>
                 <p>{userByID.frist_name} {userByID.last_name}</p>
               </div>
-                <select name="subjectSj_id" onChange={hdlChangeSubject} className="p-2 rounded border w-full mb-4">
-                  <option value="">กรุณาเลือกวิชา</option>
-                  {allSubject.map(sub => (
-                    <option key={sub.sj_id} value={sub.sj_id}>{sub.subject}</option>
-                  ))}
-                </select>
-                <label htmlFor="grade" className="block">เพิ่มเกรด</label>
-                <input type="text" name="grade" value={input.grade} onChange={hdlChange} className="p-2 rounded border w-full mb-4" />
-                <label htmlFor="datetime" className="block">ปีการศึกษา</label>
-                <input type="text" name="datetime" value={input.datetime} onChange={hdlChange} className="p-2 rounded border w-full mb-4" />
-                <div className="modal-action">
-                  <button type="submit" className="bg-blue-500 text-white p-2 rounded" onClick={ () => hdlSubmit(userByID.user_id) } >บันทึก</button>
-                  <button type="button" className="bg-red-500 text-white p-2 rounded" onClick={closeModal}>ยกเลิก</button>
-                </div>
+              <select name="subjectSj_id" onChange={hdlChangeSubject} className="p-2 rounded border w-full mb-4">
+                <option value="">กรุณาเลือกวิชา</option>
+                {allSubject.map(sub => (
+                  <option key={sub.sj_id} value={sub.sj_id}>{sub.subject}</option>
+                ))}
+              </select>
+              <label htmlFor="grade" className="block">เพิ่มเกรด</label>
+              <select
+                name="grade"
+                value={input.grade}
+                onChange={hdlChange}
+                className="p-2 rounded border w-full mb-4"
+              >
+                <option value="">เลือกเกรด</option>
+                <option value="4">4</option>
+                <option value="3.5">3.5</option>
+                <option value="3">3</option>
+                <option value="2.5">2.5</option>
+                <option value="2">2</option>
+                <option value="1.5">1.5</option>
+                <option value="1">1</option>
+                <option value="0">0</option>
+                <option value="ร">ร</option>
+              </select>
+
+              <label htmlFor="datetime" className="block">ปีการศึกษา</label>
+              <input type="text" name="datetime" value={input.datetime} onChange={hdlChange} className="p-2 rounded border w-full mb-4" />
+              <div className="modal-action">
+                <button type="submit" className="bg-blue-500 text-white p-2 rounded" onClick={() => hdlSubmit(userByID.user_id)} >บันทึก</button>
+                <button type="button" className="bg-red-500 text-white p-2 rounded" onClick={closeModal}>ยกเลิก</button>
+              </div>
             </div>
           </dialog>
         )}

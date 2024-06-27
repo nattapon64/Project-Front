@@ -2,6 +2,7 @@ import axios from 'axios'
 import React, { useRef, useState } from 'react'
 // import { Link } from 'react-router-dom'
 import Slibaradmin from './slibaradmin'
+import { toast } from 'react-toastify';
 
 export default function Addsubject() {
     const [input, setInput] = useState({

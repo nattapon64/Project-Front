@@ -3,11 +3,9 @@ import useAuth from '../hooks/useAuth'
 import Header from '../Login/header'
 import Header2 from '../Header'
 import Login from '../Login/body'
-import Teacher1 from '../Teacher/teacher1'
 import Complete from '../Teacher/complete'
 import Footer from '../Login/footer'
-import Teacher2 from '../Teacher/teacher2'
-import Admin1 from '../Admin/admin1'
+import MainAM from '../Admin/MainAM'
 import Student from '../student/student'
 import Adduser from '../Admin/Adduser'
 import Addsubject from '../Admin/Addsubject'
@@ -16,8 +14,12 @@ import User from '../Teacher/user'
 import Subject from '../Teacher/subject'
 import Slibaradmin from '../Admin/slibaradmin'
 import Searchedit from '../Teacher/searchedit'
-import SlibraSTD from '../student/slibraSTD'
+import SlibraSTD from '../student/SlibraSTD'
 import ProfileSTD from '../student/profileSTD'
+import SubjectSTD from '../student/subjectSTD'
+import GardeSTD from '../student/gardeSTD'
+import SlibaraTC from '../Teacher/slibaraTC'
+import MainTC from '../Teacher/MainTC'
 
 const guestRouter = createBrowserRouter([
   {
@@ -48,6 +50,9 @@ const userRouter = createBrowserRouter([
       { path: '/Student', element: <Student/>},
       { path: '/SlibraSTD', element: <SlibraSTD/>},
       { path: '/ProfileSTD', element: <ProfileSTD/>},
+      { path: '/SubjectSTD', element: <SubjectSTD/>},
+      { path: '/GardeSTD', element: <GardeSTD/>},
+      { path: '/SlibaraTC', element: <SlibaraTC/>},
       { path: '*', element: <p>PAGE NOT FOUND</p>},
     ]
   }
@@ -61,8 +66,7 @@ const adminRouter = createBrowserRouter([
       <Outlet />
     </>,
     children: [
-      { index: true, element: <Admin1 /> },
-      { path: '/News', element: <Admin1 /> },
+      { index: true, element: <MainAM /> },
       { path: '/slibaradmin', element: <Slibaradmin /> },
       { path: '/add', element: <Adduser /> },
       { path: '/Addsub', element: <Addsubject/>},
@@ -79,9 +83,8 @@ const teacherRouter = createBrowserRouter([
       <Outlet />
     </>,
     children: [
-      { index: true, element: <Teacher1 /> },
+      { index: true, element: <MainTC /> },
       { path: '/complete', element: <Complete /> },
-      { path: '/teacher2', element: <Teacher2 /> },
       { path: '/user', element: <User /> },
       { path: '/searchedit', element: <Searchedit /> },
       { path: '/subject', element: <Subject /> },

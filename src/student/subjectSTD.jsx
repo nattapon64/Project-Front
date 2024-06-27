@@ -1,15 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import SlibaraTC from './slibaraTC';
 import { Link } from 'react-router-dom';
+import SlibraSTD from './slibraSTD';
 
-function Subject() {
+function subjectSTD() {
     const [data, setData] = useState([]);
 
     useEffect(() => {
         let token = localStorage.getItem("token");
 
-        axios.get(`http://localhost:2000/teacher/subject`, {
+        axios.get(`http://localhost:2000/student/getSubjectUser`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -20,7 +20,7 @@ function Subject() {
 
     return (
         <div className="flex">
-            <SlibaraTC/>
+            <SlibraSTD/>
             <div className="w-4/5 h-screen">
                 <div className="mt-3">
                     <h3 className="text-center text-xl font-bold">รายชื่อ</h3>
@@ -46,4 +46,4 @@ function Subject() {
     );
 }
 
-export default Subject;
+export default subjectSTD

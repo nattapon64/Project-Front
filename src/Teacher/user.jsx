@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import SlibaraTC from './slibaraTC';
 import { Link } from 'react-router-dom';
 
 export default function User() {
@@ -42,13 +43,7 @@ export default function User() {
 
     return (
         <div className="flex min-h-screen bg-gray-100">
-            <div className="bg-slate-600 flex flex-col w-1/5 gap-6 p-4">
-                <Link to='/subject' className="text-white hover:bg-slate-500 p-2 rounded">รายชื่อวิชา</Link>
-                <Link to='/user' className="text-white hover:bg-slate-500 p-2 rounded">รายชื่อนักเรียน</Link>
-                <a href="#" className="text-white hover:bg-slate-500 p-2 rounded">ตารางเรียน</a>
-                <Link to="/complete" className="text-white hover:bg-slate-500 p-2 rounded">กรอกผลการเรียน</Link>
-                <Link to="/searchedit" className="text-white hover:bg-slate-500 p-2 rounded">ค้นหา</Link>
-            </div>
+            <SlibaraTC/>
             <div className="w-4/5 p-6">
                 <div className="bg-white shadow-lg rounded-lg p-6">
                     <h3 className="text-center text-2xl font-bold mb-6">รายชื่อ</h3>
@@ -59,6 +54,7 @@ export default function User() {
                         <table className="table-auto w-full border-collapse">
                             <thead>
                                 <tr className="bg-gray-200">
+                                    <th className="px-4 py-2 border">รหัสนักเรียน</th>
                                     <th className="px-4 py-2 border">First Name</th>
                                     <th className="px-4 py-2 border">Last Name</th>
                                     <th className="px-4 py-2 border">Class</th>
@@ -69,6 +65,7 @@ export default function User() {
                             <tbody>
                                 {data.map((user, index) => (
                                     <tr key={index} className="hover:bg-gray-100">
+                                        <td className="px-4 py-2 border">{user.username}</td>
                                         <td className="px-4 py-2 border">{user.frist_name}</td>
                                         <td className="px-4 py-2 border">{user.last_name}</td>
                                         <td className="px-4 py-2 border">{user.class.classroom}</td>
